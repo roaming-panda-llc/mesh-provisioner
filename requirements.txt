@@ -1,0 +1,8 @@
+# Roaming Panda Mesh Provisioner Dependencies
+# Requires Linux with BlueZ 5.47+ and bluetooth-meshd running
+
+# D-Bus interface (async)
+dbus-fast>=2.0.0
+
+# Optional: bluetooth-mesh SDK (for advanced features)
+# bluetooth-mesh>=0.9.0
