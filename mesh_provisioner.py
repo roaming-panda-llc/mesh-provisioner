@@ -109,7 +109,9 @@ class ProvisionedNode:
 
     def __str__(self) -> str:
         name_part = f" ({self.name})" if self.name else ""
-        return f"Address: 0x{self.unicast_address:04X}{name_part}, UUID: {self.uuid_str}"
+        return (
+            f"Address: 0x{self.unicast_address:04X}{name_part}, UUID: {self.uuid_str}"
+        )
 
 
 @dataclass
@@ -259,9 +261,7 @@ class MeshProvisionerApp:
     # org.bluez.mesh.Provisioner1 interface
     # =========================================================================
 
-    def ScanResult(
-        self, rssi: int, data: bytes, options: dict[str, Any]
-    ) -> None:
+    def ScanResult(self, rssi: int, data: bytes, options: dict[str, Any]) -> None:
         """Called when an unprovisioned device is discovered."""
         if len(data) < 16:
             logger.warning(f"Invalid scan result data length: {len(data)}")
@@ -382,10 +382,7 @@ class MeshProvisionerApp:
 
         if opcode == GENERIC_ONOFF_STATUS:
             state = payload[0] if payload else 0
-            logger.info(
-                f"OnOff Status from 0x{source:04X}: "
-                f"{'ON' if state else 'OFF'}"
-            )
+            logger.info(f"OnOff Status from 0x{source:04X}: {'ON' if state else 'OFF'}")
 
     def DevKeyMessageReceived(
         self,
@@ -780,7 +777,11 @@ async def cmd_onoff(args: argparse.Namespace) -> int:
         await provisioner.connect()
         await provisioner.attach_network()
 
-        address = int(args.address, 16) if args.address.startswith("0x") else int(args.address)
+        address = (
+            int(args.address, 16)
+            if args.address.startswith("0x")
+            else int(args.address)
+        )
 
         if args.state.lower() in ("on", "1", "true"):
             await provisioner.send_onoff(address, True, not args.unacknowledged)
